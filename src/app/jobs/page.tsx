@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { apiClient } from "@/lib/api-client";
 import { JobVacancy, PaginatedResponse, Category, Country, City } from "@/types/api";
 import { SiteHeader } from "@/components/SiteHeader";
+import { CustomPagination } from "@/components/ui/custom-pagination";
 
 export default function JobsPage() {
   return (
@@ -311,25 +312,11 @@ function JobsPageContent() {
             ))}
 
             {meta && meta.lastPage > 1 && (
-              <div className="flex justify-center items-center gap-4 py-8">
-                <Button 
-                  variant="outline" 
-                  disabled={meta.page <= 1} 
-                  onClick={() => setPage(p => Math.max(1, p - 1))}
-                >
-                  Previous
-                </Button>
-                <span className="text-sm font-medium text-zinc-600 dark:text-zinc-400">
-                  Page {meta.page} of {meta.lastPage}
-                </span>
-                <Button 
-                  variant="outline" 
-                  disabled={meta.page >= meta.lastPage} 
-                  onClick={() => setPage(p => Math.min(meta.lastPage, p + 1))}
-                >
-                  Next
-                </Button>
-              </div>
+              <CustomPagination 
+                currentPage={meta.page} 
+                lastPage={meta.lastPage} 
+                onPageChange={(p) => setPage(p)} 
+              />
             )}
           </div>
         </div>
