@@ -50,7 +50,7 @@ export default async function EmployersPage() {
                   <div className="space-y-2 text-sm text-zinc-600 dark:text-zinc-400">
                     <div className="flex items-center gap-2">
                       <MapPin className="w-4 h-4" />
-                      <span className="line-clamp-1">{employer.location ? `${employer.location.city}, ${employer.location.country}` : 'Remote'}</span>
+                      <span className="line-clamp-1">{employer.city ? `${employer.city.name}, ${employer.city.country?.name}` : 'Remote'}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Users className="w-4 h-4" />

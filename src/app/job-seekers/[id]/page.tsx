@@ -99,7 +99,7 @@ export default function CandidateProfile() {
                       </span>
                     )}
                     <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800">
-                      <MapPin className="w-4 h-4 text-zinc-500"/> {candidate.location ? `${candidate.location.city}, ${candidate.location.country}` : 'Location Unspecified'}
+                      <MapPin className="w-4 h-4 text-zinc-500"/> {candidate.city ? `${candidate.city.name}, ${candidate.city.country?.name}` : 'Location Unspecified'}
                     </span>
                   </div>
                 </div>

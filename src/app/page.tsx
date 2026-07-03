@@ -152,7 +152,7 @@ export default async function Home() {
                     <h3 className="font-bold text-lg text-zinc-900 dark:text-white group-hover:text-blue-600 transition-colors line-clamp-1">{employer.companyName}</h3>
                     <p className="text-sm text-zinc-500 mb-4 line-clamp-1">{employer.industry?.name || 'Various Industries'}</p>
                     <div className="w-full flex justify-between items-center pt-4 border-t border-zinc-100 dark:border-zinc-800">
-                       <span className="text-xs font-semibold text-zinc-400 flex items-center gap-1"><MapPin className="w-3 h-3"/> {employer.location ? employer.location.city : 'Remote'}</span>
+                       <span className="text-xs font-semibold text-zinc-400 flex items-center gap-1"><MapPin className="w-3 h-3"/> {employer.city ? employer.city.name : 'Remote'}</span>
                        <span className="text-xs font-medium text-blue-600 bg-blue-50 dark:bg-blue-900/30 px-2 py-1 rounded-md">View Profile</span>
                     </div>
                   </CardContent>
@@ -193,7 +193,7 @@ export default async function Home() {
                         <div>
                           <h3 className="text-xl font-bold text-zinc-900 dark:text-white group-hover:text-blue-600 transition-colors line-clamp-1">{job.title}</h3>
                           <p className="text-zinc-600 dark:text-zinc-400 font-medium flex items-center gap-1 line-clamp-1">
-                            {job.employer?.companyName || "Unknown Company"} • {job.location ? `${job.location.city}, ${job.location.country}` : "Remote"}
+                            {job.employer?.companyName || "Unknown Company"} • {job.city ? `${job.city.name}, ${job.city.country?.name}` : "Remote"}
                           </p>
                         </div>
                         <div className="flex flex-wrap gap-2">

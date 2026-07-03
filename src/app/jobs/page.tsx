@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { apiClient } from "@/lib/api-client";
-import { JobVacancy, PaginatedResponse, Location, Category } from "@/types/api";
+import { JobVacancy, PaginatedResponse, Category, Country, City } from "@/types/api";
 import { SiteHeader } from "@/components/SiteHeader";
 
 export default function JobsPage() {
@@ -25,7 +25,8 @@ function JobsPageContent() {
   const subCategoryIdsParam = searchParams.get('subCategoryIds');
   const initialSubCategoryIds = subCategoryIdsParam ? subCategoryIdsParam.split(',').map(Number).filter(n => !isNaN(n)) : [];
   const initialSearch = searchParams.get('search') || "";
-  const locationParam = searchParams.get('location') || "";
+  const countryParam = searchParams.get('country') || "";
+  const cityParam = searchParams.get('city') || "";
 
   const [searchTerm, setSearchTerm] = useState(initialSearch);
   const [searchQuery, setSearchQuery] = useState(initialSearch);
@@ -33,15 +34,26 @@ function JobsPageContent() {
   const [sortOrder, setSortOrder] = useState<"desc" | "asc">("desc");
   const [sortBy, setSortBy] = useState<"createdAt" | "salary">("createdAt");
   const [employmentType, setEmploymentType] = useState<string[]>([]);
-  const [locationId, setLocationId] = useState<string>(locationParam);
+  const [countryId, setCountryId] = useState<string>(countryParam);
+  const [cityId, setCityId] = useState<string>(cityParam);
   const [selectedSubCategories, setSelectedSubCategories] = useState<number[]>(initialSubCategoryIds);
 
-  const { data: locationsData } = useQuery({
-    queryKey: ['locations'],
+  const { data: countries = [] } = useQuery({
+    queryKey: ['countries'],
     queryFn: async () => {
-      const res = await apiClient.get<Location[]>('/locations');
+      const res = await apiClient.get<Country[]>('/countries');
       return res.data;
     }
+  });
+
+  const { data: cities = [] } = useQuery({
+    queryKey: ['cities', countryId],
+    queryFn: async () => {
+      if (!countryId) return [];
+      const res = await apiClient.get<City[]>(`/cities?countryId=${countryId}`);
+      return res.data;
+    },
+    enabled: !!countryId
   });
 
   const { data: categoriesData } = useQuery({
@@ -53,14 +65,17 @@ function JobsPageContent() {
   });
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ['vacancies', searchQuery, page, selectedSubCategories, sortOrder, sortBy, locationId, employmentType],
+    queryKey: ['vacancies', searchQuery, page, selectedSubCategories, sortOrder, sortBy, countryId, cityId, employmentType],
     queryFn: async () => {
       let url = `/vacancies?search=${encodeURIComponent(searchQuery)}&page=${page}&sortOrder=${sortOrder}&sortBy=${sortBy}`;
       if (selectedSubCategories.length > 0) {
         url += `&subCategoryIds=${selectedSubCategories.join(',')}`;
       }
-      if (locationId) {
-        url += `&locationId=${locationId}`;
+      if (countryId) {
+        url += `&countryId=${countryId}`;
+      }
+      if (cityId) {
+        url += `&cityId=${cityId}`;
       }
       if (employmentType.length > 0) {
         url += `&employmentType=${encodeURIComponent(employmentType.join(','))}`;
@@ -160,19 +175,37 @@ function JobsPageContent() {
             
             <div className="space-y-3">
               <h3 className="font-medium text-zinc-900 dark:text-zinc-100">Location</h3>
-              <select 
-                className="w-full bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 rounded-md text-sm py-2 px-3 focus:ring-blue-500"
-                value={locationId}
-                onChange={(e) => {
-                  setLocationId(e.target.value);
-                  setPage(1);
-                }}
-              >
-                <option value="">All Locations</option>
-                {locationsData?.map(loc => (
-                  <option key={loc.id} value={loc.id}>{loc.city}, {loc.country}</option>
-                ))}
-              </select>
+              <div className="space-y-3">
+                <select 
+                  className="w-full bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 rounded-md text-sm py-2 px-3 focus:ring-blue-500"
+                  value={countryId}
+                  onChange={(e) => {
+                    setCountryId(e.target.value);
+                    setCityId("");
+                    setPage(1);
+                  }}
+                >
+                  <option value="">All Countries</option>
+                  {countries.map(c => (
+                    <option key={c.id} value={c.id}>{c.name}</option>
+                  ))}
+                </select>
+
+                <select 
+                  className="w-full bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 rounded-md text-sm py-2 px-3 focus:ring-blue-500 disabled:opacity-50"
+                  value={cityId}
+                  onChange={(e) => {
+                    setCityId(e.target.value);
+                    setPage(1);
+                  }}
+                  disabled={!countryId || cities.length === 0}
+                >
+                  <option value="">All Cities</option>
+                  {cities.map(c => (
+                    <option key={c.id} value={c.id}>{c.name}</option>
+                  ))}
+                </select>
+              </div>
             </div>
           </div>
         </aside>
@@ -239,11 +272,11 @@ function JobsPageContent() {
                             <span>{job.employer?.companyName || "Unknown Company"}</span>
                             <CheckCircle2 className="w-4 h-4 text-green-500" />
                             <span className="text-zinc-300 dark:text-zinc-700">•</span>
-                            <span className="flex items-center gap-1"><MapPin className="w-3 h-3" /> {job.location ? `${job.location.city}, ${job.location.country}` : "Remote"}</span>
+                            <span className="flex items-center gap-1"><MapPin className="w-3 h-3" /> {job.city ? `${job.city.name}, ${job.city.country?.name}` : "Remote"}</span>
                           </div>
                         </div>
                         <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 font-semibold whitespace-nowrap">
-                          {job.salaryMin ? `$${job.salaryMin.toLocaleString()}` : "Competitive"}
+                          {job.salaryCurrency || "USD"} {job.salaryMin ? job.salaryMin.toLocaleString() : "Competitive"}
                         </Badge>
                       </div>
                       

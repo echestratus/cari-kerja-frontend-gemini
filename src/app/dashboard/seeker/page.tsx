@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { ApplicationStatus, Application, SavedJob, PaginatedResponse, JobVacancy, Gender, MaritalStatus, Skill, Experience, Education } from "@/types/api";
+import { ApplicationStatus, Application, SavedJob, PaginatedResponse, JobVacancy, Gender, MaritalStatus, Skill, Experience, Education, Country, City } from "@/types/api";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -29,6 +29,8 @@ export default function SeekerDashboard() {
     portfolioUrl: "",
     linkedInUrl: "",
     summary: "",
+    countryId: "",
+    cityId: "",
     willingToRelocate: false,
     maritalStatus: "",
     taxId: "",
@@ -48,6 +50,8 @@ export default function SeekerDashboard() {
         portfolioUrl: user.jobSeeker.portfolioUrl || "",
         linkedInUrl: user.jobSeeker.linkedInUrl || "",
         summary: user.jobSeeker.summary || "",
+        countryId: user.jobSeeker.city?.countryId?.toString() || "",
+        cityId: user.jobSeeker.cityId?.toString() || "",
         willingToRelocate: user.jobSeeker.willingToRelocate || false,
         maritalStatus: user.jobSeeker.maritalStatus || "",
         taxId: user.jobSeeker.taxId || "",
@@ -56,6 +60,25 @@ export default function SeekerDashboard() {
       });
     }
   }, [user]);
+
+  // -- Countries & Cities State --
+  const { data: countries = [] } = useQuery({
+    queryKey: ['countries'],
+    queryFn: async () => {
+      const res = await apiClient.get<Country[]>('/countries');
+      return res.data;
+    }
+  });
+
+  const { data: cities = [] } = useQuery({
+    queryKey: ['cities', formData.countryId],
+    queryFn: async () => {
+      if (!formData.countryId) return [];
+      const res = await apiClient.get<City[]>(`/cities?countryId=${formData.countryId}`);
+      return res.data;
+    },
+    enabled: !!formData.countryId
+  });
 
   // -- Experience State & Mutations --
   const [expModalOpen, setExpModalOpen] = useState(false);
@@ -524,6 +547,10 @@ export default function SeekerDashboard() {
       if (!payload.gender) delete payload.gender;
       if (!payload.maritalStatus) delete payload.maritalStatus;
 
+      if (payload.cityId) payload.cityId = parseInt(payload.cityId, 10);
+      else payload.cityId = null;
+      delete payload.countryId; // We don't send countryId to the backend for JobSeeker update
+
       await apiClient.patch('/job-seekers/profile', payload);
       await checkAuth(); // Refresh user data
       setProfileSuccess(true);
@@ -769,6 +796,37 @@ export default function SeekerDashboard() {
                                  <option value="MALE">Male</option>
                                  <option value="FEMALE">Female</option>
                                  <option value="PREFER_NOT_TO_SAY">Prefer not to say</option>
+                               </select>
+                             </div>
+                          </div>
+                          <div className="grid grid-cols-2 gap-4">
+                             <div className="space-y-2">
+                               <label className="text-sm font-medium leading-none mb-1 block">Country of Residence</label>
+                               <select 
+                                 className="flex h-10 w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-950 focus-visible:ring-offset-2 dark:border-zinc-800 dark:bg-zinc-950 dark:ring-offset-zinc-950 dark:focus-visible:ring-zinc-300"
+                                 value={formData.countryId} 
+                                 onChange={(e) => setFormData({...formData, countryId: e.target.value, cityId: ""})}
+                               >
+                                 <option value="">Select Country</option>
+                                 {countries.map(country => (
+                                   <option key={country.id} value={country.id}>
+                                     {country.name} ({country.phoneCode})
+                                   </option>
+                                 ))}
+                               </select>
+                             </div>
+                             <div className="space-y-2">
+                               <label className="text-sm font-medium leading-none mb-1 block">City</label>
+                               <select 
+                                 className="flex h-10 w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-950 focus-visible:ring-offset-2 disabled:opacity-50 dark:border-zinc-800 dark:bg-zinc-950 dark:ring-offset-zinc-950 dark:focus-visible:ring-zinc-300"
+                                 value={formData.cityId} 
+                                 onChange={(e) => setFormData({...formData, cityId: e.target.value})}
+                                 disabled={!formData.countryId || cities.length === 0}
+                               >
+                                 <option value="">Select City</option>
+                                 {cities.map(city => (
+                                   <option key={city.id} value={city.id}>{city.name}</option>
+                                 ))}
                                </select>
                              </div>
                           </div>
@@ -1097,7 +1155,7 @@ export default function SeekerDashboard() {
                           </Link>
                           <div className="flex flex-wrap items-center text-sm font-medium text-zinc-500 dark:text-zinc-400 gap-x-4 gap-y-2 mt-2">
                             <span className="flex items-center"><Building2 className="w-4 h-4 mr-1.5" /> {app.vacancy?.employer?.companyName || 'Unknown Company'}</span>
-                            <span className="flex items-center"><MapPin className="w-4 h-4 mr-1.5" /> {app.vacancy?.location ? `${app.vacancy.location.city}, ${app.vacancy.location.country}` : 'Unknown Location'}</span>
+                            <span className="flex items-center"><MapPin className="w-4 h-4 mr-1.5" /> {app.vacancy?.city ? `${app.vacancy.city.name}, ${app.vacancy.city.country?.name}` : 'Unknown Location'}</span>
                             <span className="flex items-center"><Clock className="w-4 h-4 mr-1.5" /> Applied: {new Date(app.createdAt).toLocaleDateString()}</span>
                           </div>
                         </div>

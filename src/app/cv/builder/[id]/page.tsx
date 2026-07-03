@@ -112,9 +112,9 @@ export default function CVBuilder() {
                 {user.email && <span>{user.email}</span>}
                 {user.email && js?.phone && <span>|</span>}
                 {js?.phone && <span>{js.phone}</span>}
-                {js?.phone && js?.location && <span>|</span>}
-                {js?.location && <span>{js.location.city}, {js.location.country}</span>}
-                {js?.location && js?.linkedInUrl && <span>|</span>}
+                {js?.phone && js?.city && <span>|</span>}
+                {js?.city && <span>{js.city.name}, {js.city.country?.name}</span>}
+                {js?.city && js?.linkedInUrl && <span>|</span>}
                 {js?.linkedInUrl && <span>{js.linkedInUrl.replace(/^https?:\/\/(www\.)?/, '')}</span>}
               </div>
             </div>
