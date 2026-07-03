@@ -76,12 +76,12 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
       "@type": "Place",
       "address": {
         "@type": "PostalAddress",
-        "addressLocality": job.location ? `${job.location.city}, ${job.location.country}` : "Remote",
+        "addressLocality": job.city ? `${job.city.name}, ${job.city.country?.name}` : "Remote",
       }
     },
     "baseSalary": job.salaryMin ? {
       "@type": "MonetaryAmount",
-      "currency": "IDR",
+      "currency": job.salaryCurrency || "USD",
       "value": {
         "@type": "QuantitativeValue",
         "minValue": job.salaryMin,
@@ -126,11 +126,11 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
               <div className="flex flex-wrap gap-4 mb-6">
                 {job.salaryMin && (
                   <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 text-sm py-1">
-                    <DollarSign className="w-4 h-4 mr-1" /> ${job.salaryMin.toLocaleString()}
+                    <DollarSign className="w-4 h-4 mr-1" /> {job.salaryCurrency || "USD"} {job.salaryMin.toLocaleString()}
                   </Badge>
                 )}
                 <div className="flex items-center text-zinc-600 dark:text-zinc-400 gap-1 text-sm font-medium">
-                  <MapPin className="w-4 h-4" /> {job.location ? `${job.location.city}, ${job.location.country}` : "Remote"}
+                  <MapPin className="w-4 h-4" /> {job.city ? `${job.city.name}, ${job.city.country?.name}` : "Remote"}
                 </div>
                 <div className="flex items-center text-zinc-600 dark:text-zinc-400 gap-1 text-sm font-medium">
                   <Briefcase className="w-4 h-4" /> {job.employmentType.replace('_', ' ')}

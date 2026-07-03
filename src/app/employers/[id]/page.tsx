@@ -72,7 +72,7 @@ export default async function EmployerProfilePage({ params }: { params: Promise<
                     </span>
                   )}
                   <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800">
-                    <MapPin className="w-4 h-4 text-zinc-500"/> {employer.location ? `${employer.location.city}, ${employer.location.country}` : 'Remote'}
+                    <MapPin className="w-4 h-4 text-zinc-500"/> {employer.city ? `${employer.city.name}, ${employer.city.country?.name}` : 'Remote'}
                   </span>
                   {employer.employeeSize && (
                     <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800">
@@ -107,7 +107,7 @@ export default async function EmployerProfilePage({ params }: { params: Promise<
                         </div>
                         <div className="flex flex-col mt-1">
                           <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-1">Website</span>
-                          <a href={employer.website} target="_blank" rel="noreferrer" className="text-zinc-900 dark:text-zinc-200 hover:text-blue-600 font-medium transition-colors break-all">{employer.website}</a>
+                          <a href={employer.website} target="_blank" rel="noreferrer" className="text-zinc-900 dark:bg-zinc-200 hover:text-blue-600 font-medium transition-colors break-all">{employer.website}</a>
                         </div>
                       </div>
                     )}
@@ -158,7 +158,7 @@ export default async function EmployerProfilePage({ params }: { params: Promise<
                         <h3 className="font-bold text-xl text-zinc-900 dark:text-white group-hover:text-blue-600 transition-colors mb-3 line-clamp-2 leading-tight">{job.title}</h3>
                         <div className="flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400 mb-4 font-medium">
                           <MapPin className="w-4 h-4" />
-                          <span className="line-clamp-1">{job.location ? `${job.location.city}, ${job.location.country}` : 'Remote'}</span>
+                          <span className="line-clamp-1">{job.city ? `${job.city.name}, ${job.city.country?.name}` : 'Remote'}</span>
                         </div>
                       </div>
                       <div className="flex gap-2 flex-wrap mt-4 pt-4 border-t border-zinc-100 dark:border-zinc-800">

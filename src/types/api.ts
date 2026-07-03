@@ -78,11 +78,36 @@ export interface Industry {
   createdAt: string;
 }
 
-export interface Location {
+export interface Country {
   id: number;
-  city: string;
-  country: string;
+  name: string;
+  isoAlpha2: string;
+  isoAlpha3: string;
+  currencyCode: string;
+  currencySymbol: string;
+  phoneCode: string;
   createdAt: string;
+}
+
+export interface City {
+  id: number;
+  name: string;
+  countryId: number;
+  createdAt: string;
+  country?: Country;
+}
+
+export interface Certificate {
+  id: string;
+  jobSeekerId: string;
+  name: string;
+  issuingOrganization: string;
+  issueDate: string;
+  expirationDate: string | null;
+  credentialId: string | null;
+  credentialUrl: string | null;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Skill {
@@ -134,11 +159,12 @@ export interface JobSeeker {
   phone: string | null;
   avatarUrl: string | null;
   address: string | null;
-  locationId: number | null;
+  cityId: number | null;
   dateOfBirth: string | null;
   gender: Gender | null;
   portfolioUrl: string | null;
   linkedInUrl: string | null;
+  summary: string | null;
   willingToRelocate: boolean;
   maritalStatus: MaritalStatus | null;
   taxId: string | null;
@@ -147,11 +173,12 @@ export interface JobSeeker {
   createdAt: string;
   updatedAt: string;
   user?: User;
-  location?: Location;
+  city?: City;
   resumes?: Resume[];
   skills?: Skill[];
   experiences?: Experience[];
   educations?: Education[];
+  certificates?: Certificate[];
 }
 
 export interface Resume {
@@ -176,7 +203,7 @@ export interface Employer {
   logoUrl: string | null;
   phone: string | null;
   address: string | null;
-  locationId: number | null;
+  cityId: number | null;
   employeeSize: string | null;
   industryId: number | null;
   verificationStatus: VerificationStatus;
@@ -185,7 +212,7 @@ export interface Employer {
   createdAt: string;
   updatedAt: string;
   user?: User;
-  location?: Location;
+  city?: City;
   industry?: Industry;
   jobVacancies?: JobVacancy[];
 }
@@ -193,19 +220,20 @@ export interface Employer {
 export interface JobVacancy {
   id: string;
   employerId: string;
-  locationId: number;
+  cityId: number;
   title: string;
   description: string;
   requirements: string;
   salaryMin: number | null;
   salaryMax: number | null;
+  salaryCurrency: string | null;
   employmentType: EmploymentType;
   status: VacancyStatus;
   isPremium: boolean;
   createdAt: string;
   updatedAt: string;
   employer?: Employer;
-  location?: Location;
+  city?: City;
   subCategories?: SubCategory[];
 }
 
