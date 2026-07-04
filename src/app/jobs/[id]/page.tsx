@@ -126,7 +126,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
               <div className="flex flex-wrap gap-4 mb-6">
                 {job.salaryMin && (
                   <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 text-sm py-1">
-                    <DollarSign className="w-4 h-4 mr-1" /> {job.salaryCurrency || "USD"} {job.salaryMin.toLocaleString()}
+                     {job.salaryCurrency || "USD"} {job.salaryMin.toLocaleString()} {job.salaryMax ? `- ${job.salaryMax.toLocaleString()}` : ''}
                   </Badge>
                 )}
                 <div className="flex items-center text-zinc-600 dark:text-zinc-400 gap-1 text-sm font-medium">
