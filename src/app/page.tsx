@@ -199,8 +199,7 @@ export default async function Home() {
                         <div className="flex flex-wrap gap-2">
                           {job.salaryMin && (
                             <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 font-semibold">
-                              <DollarSign className="w-3 h-3 mr-1" />
-                              ${job.salaryMin.toLocaleString()} {job.salaryMax ? `- $${job.salaryMax.toLocaleString()}` : ''}
+                              {job.salaryCurrency || 'USD'} {job.salaryMin.toLocaleString()} {job.salaryMax ? `- ${job.salaryMax.toLocaleString()}` : ''}
                             </Badge>
                           )}
                           <Badge variant="outline" className="bg-zinc-50 dark:bg-zinc-900">{job.employmentType.replace('_', ' ')}</Badge>
