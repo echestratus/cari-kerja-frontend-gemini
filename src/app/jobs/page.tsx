@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import { Search, MapPin, Filter, CheckCircle2, Building2, Clock, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { formatCurrency } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { apiClient } from "@/lib/api-client";
@@ -277,7 +278,7 @@ function JobsPageContent() {
                           </div>
                         </div>
                         <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 font-semibold whitespace-nowrap">
-                          {job.salaryMin && job.isSalaryVisible !== false ? `${job.salaryCurrency || "USD"} ${job.salaryMin.toLocaleString()}` : "Competitive"}
+                          {job.salaryMin && job.isSalaryVisible !== false ? `${formatCurrency(job.salaryMin, job.salaryCurrency || "USD")}${job.salaryMax ? ` - ${formatCurrency(job.salaryMax, job.salaryCurrency || "USD")}` : ''}` : "Competitive"}
                         </Badge>
                       </div>
                       

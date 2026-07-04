@@ -11,6 +11,13 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+export function formatCurrency(amount: string | number | undefined | null, currency: string = "IDR") {
+  if (amount === undefined || amount === null) return "";
+  const num = typeof amount === "string" ? Number(amount) : amount;
+  if (isNaN(num)) return String(amount);
+  return `${currency} ${num.toLocaleString("id-ID")}`;
+}
+
 export function getCategoryIcon(name: string) {
   const lowerName = name.toLowerCase();
   
