@@ -199,7 +199,7 @@ export default async function Home() {
                         <div className="flex flex-wrap gap-2">
                           {job.salaryMin && (
                             <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 font-semibold">
-                              {job.isSalaryVisible !== false ? `${job.salaryCurrency || 'USD'} ${job.salaryMin.toLocaleString()} ${job.salaryMax ? `- ${job.salaryMax.toLocaleString()}` : ''}` : 'Competitive'}
+                              {job.isSalaryVisible !== false ? `${job.salaryCurrency || 'USD'} ${job.salaryMin.toLocaleString()}${job.salaryMax ? ` - ${job.salaryCurrency || 'USD'} ${job.salaryMax.toLocaleString()}` : ''}` : 'Competitive'}
                             </Badge>
                           )}
                           <Badge variant="outline" className="bg-zinc-50 dark:bg-zinc-900">{job.employmentType.replace('_', ' ')}</Badge>

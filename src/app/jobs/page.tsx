@@ -277,7 +277,7 @@ function JobsPageContent() {
                           </div>
                         </div>
                         <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 font-semibold whitespace-nowrap">
-                          {job.salaryMin && job.isSalaryVisible !== false ? `${job.salaryCurrency || "USD"} ${job.salaryMin.toLocaleString()}` : "Competitive"}
+                          {job.salaryMin && job.isSalaryVisible !== false ? `${job.salaryCurrency || "USD"} ${job.salaryMin.toLocaleString()}${job.salaryMax ? ` - ${job.salaryCurrency || "USD"} ${job.salaryMax.toLocaleString()}` : ''}` : "Competitive"}
                         </Badge>
                       </div>
                       
