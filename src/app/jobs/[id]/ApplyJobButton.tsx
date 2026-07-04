@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useAuth } from '@/providers/AuthProvider';
 import { apiClient } from '@/lib/api-client';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -84,10 +84,8 @@ export default function ApplyJobButton({ jobId }: { jobId: string }) {
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        <Button size="lg" className="w-full md:w-auto px-10 text-base bg-blue-600 hover:bg-blue-700">
-          Apply Now
-        </Button>
+      <DialogTrigger className={buttonVariants({ size: "lg", className: "w-full md:w-auto px-10 text-base bg-blue-600 hover:bg-blue-700" })}>
+        Apply Now
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
