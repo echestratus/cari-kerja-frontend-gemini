@@ -15,3 +15,13 @@ You MUST follow professional DevOps standards for all code changes:
 6. Push the branch to the remote repository.
 7. Notify the user to create a Pull Request (PR) to merge into the main branch.
 <!-- END:git-workflow-rules -->
+
+<!-- BEGIN:dual-agent-workflow-rules -->
+# Dual-Agent Workspace Isolation
+The user operates using TWO separate agent conversations:
+- ONE exclusively for the Frontend (this conversation)
+- ONE exclusively for the Backend
+
+**CRITICAL RULE:**
+You MUST NOT attempt to directly modify the backend codebase from this conversation, nor should you make assumptions about backend state without verifying. If a task requires changes in the backend, you MUST provide a clear, concise instruction/prompt in your response that the user can copy and paste to the Backend Agent. This ensures clear boundaries and trackability between the two projects.
+<!-- END:dual-agent-workflow-rules -->
