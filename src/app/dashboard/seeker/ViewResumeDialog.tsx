@@ -81,17 +81,11 @@ export default function ViewResumeDialog({
                 {resume.experiences.map((exp: any) => (
                   <div key={exp.id} className="relative pl-4 border-l-2 border-zinc-200 dark:border-zinc-800">
                     <div className="absolute w-2.5 h-2.5 bg-blue-600 rounded-full -left-[6px] top-1.5 border-2 border-white dark:border-zinc-950"></div>
-                    <h5 className="font-medium text-zinc-900 dark:text-zinc-100">{exp.title}</h5>
+                    <h5 className="font-medium text-zinc-900 dark:text-zinc-100">{exp.jobTitle}</h5>
                     <div className="text-sm text-zinc-500 mb-2 flex items-center gap-2 flex-wrap">
                       <span className="font-medium">{exp.companyName}</span>
                       <span>&bull;</span>
-                      <span className="flex items-center"><Calendar className="w-3 h-3 mr-1" /> {exp.startDate.substring(0,7)} - {exp.isCurrent ? 'Present' : exp.endDate?.substring(0,7)}</span>
-                      {exp.location && (
-                        <>
-                          <span>&bull;</span>
-                          <span className="flex items-center"><MapPin className="w-3 h-3 mr-1" /> {exp.location}</span>
-                        </>
-                      )}
+                      <span className="flex items-center"><Calendar className="w-3 h-3 mr-1" /> {exp.startDate?.substring(0,7)} - {exp.isCurrentJob ? 'Present' : exp.endDate?.substring(0,7) || 'Present'}</span>
                     </div>
                     {exp.description && (
                       <p className="text-sm text-zinc-600 dark:text-zinc-400 whitespace-pre-wrap mt-2">{exp.description}</p>
@@ -117,11 +111,8 @@ export default function ViewResumeDialog({
                     <div className="text-sm text-zinc-500 mb-2 flex items-center gap-2 flex-wrap">
                       <span className="font-medium">{edu.institutionName}</span>
                       <span>&bull;</span>
-                      <span className="flex items-center"><Calendar className="w-3 h-3 mr-1" /> {edu.startDate.substring(0,7)} - {edu.endDate ? edu.endDate.substring(0,7) : 'Expected'}</span>
+                      <span className="flex items-center"><Calendar className="w-3 h-3 mr-1" /> {edu.startDate?.substring(0,7)} - {edu.endDate ? edu.endDate.substring(0,7) : 'Expected'}</span>
                     </div>
-                    {edu.description && (
-                      <p className="text-sm text-zinc-600 dark:text-zinc-400 whitespace-pre-wrap mt-2">{edu.description}</p>
-                    )}
                   </div>
                 ))}
               </div>
