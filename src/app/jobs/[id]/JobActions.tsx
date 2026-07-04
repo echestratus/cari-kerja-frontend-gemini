@@ -11,14 +11,6 @@ export default function JobActions({ jobId, jobTitle }: { jobId: string, jobTitl
   const [isSaved, setIsSaved] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (user?.role === 'JOB_SEEKER') {
-      fetchSavedStatus();
-    } else {
-      setLoading(false);
-    }
-  }, [user, jobId]);
-
   const fetchSavedStatus = async () => {
     try {
       const res = await apiClient.get('/saved-jobs');
@@ -31,6 +23,14 @@ export default function JobActions({ jobId, jobTitle }: { jobId: string, jobTitl
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (user?.role === 'JOB_SEEKER') {
+      fetchSavedStatus();
+    } else {
+      setLoading(false);
+    }
+  }, [user, jobId]);
 
   const toggleSave = async () => {
     if (!user) {
