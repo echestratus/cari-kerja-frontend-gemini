@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { ApplicationStatus } from "@/types/api";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -35,7 +36,9 @@ export default function EmployerDashboard() {
           <div className="font-bold text-xl tracking-tight text-zinc-900 dark:text-white">Employer ATS Dashboard</div>
           <div className="flex gap-4">
             <Button variant="outline">My Vacancies</Button>
+          <Link href="/dashboard/employer/jobs/create">
             <Button>Post New Job</Button>
+          </Link>
           </div>
         </div>
       </header>

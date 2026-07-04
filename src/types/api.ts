@@ -239,6 +239,20 @@ export interface JobVacancy {
   skills?: Skill[];
 }
 
+export interface CreateVacancyDto {
+  title: string;
+  description: string;
+  requirements: string;
+  cityId: number;
+  subCategoryIds: number[];
+  skillIds: number[];
+  employmentType: EmploymentType;
+  salaryMin: number;
+  salaryMax?: number;
+  salaryCurrency: string;
+  isSalaryVisible: boolean;
+}
+
 export interface Application {
   id: string;
   vacancyId: string;
