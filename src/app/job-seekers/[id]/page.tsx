@@ -108,6 +108,19 @@ export default function CandidateProfile() {
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
                 <div className="lg:col-span-2">
                   
+                  {/* PROFESSIONAL SUMMARY */}
+                  {candidate.summary && (
+                    <section className="mb-12">
+                      <h2 className="text-2xl font-bold text-zinc-900 dark:text-white mb-5 flex items-center gap-2 border-b dark:border-zinc-800 pb-2">
+                        <FileText className="w-5 h-5 text-blue-600"/>
+                        Professional Summary
+                      </h2>
+                      <div className="bg-zinc-50 dark:bg-zinc-800/50 p-6 rounded-2xl border border-zinc-100 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 leading-relaxed whitespace-pre-wrap">
+                        {candidate.summary}
+                      </div>
+                    </section>
+                  )}
+
                   {/* PERSONAL INFORMATION */}
                   <section className="mb-12">
                     <h2 className="text-2xl font-bold text-zinc-900 dark:text-white mb-5 flex items-center gap-2 border-b dark:border-zinc-800 pb-2">
