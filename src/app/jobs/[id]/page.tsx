@@ -166,6 +166,19 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
                   {job.requirements}
                 </div>
               </section>
+
+              {job.skills && job.skills.length > 0 && (
+                <section>
+                  <h2 className="text-xl font-bold text-zinc-900 dark:text-white mb-4">Required Skills</h2>
+                  <div className="flex flex-wrap gap-2">
+                    {job.skills.map(skill => (
+                      <Badge key={skill.id} variant="secondary" className="px-3 py-1.5 text-sm bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors cursor-default">
+                        {skill.name}
+                      </Badge>
+                    ))}
+                  </div>
+                </section>
+              )}
             </div>
           </div>
           

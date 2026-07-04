@@ -298,6 +298,16 @@ function JobsPageContent() {
                           ) : (
                             <Badge variant="outline" className="text-xs">General</Badge>
                           )}
+                          {job.skills && job.skills.length > 0 && job.skills.slice(0, 3).map(skill => (
+                            <Badge key={skill.id} variant="secondary" className="bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 text-xs">
+                              {skill.name}
+                            </Badge>
+                          ))}
+                          {job.skills && job.skills.length > 3 && (
+                            <Badge variant="secondary" className="bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400 text-xs">
+                              +{job.skills.length - 3} more
+                            </Badge>
+                          )}
                           {job.subCategories && job.subCategories.length > 2 && (
                             <Badge variant="outline" className="text-xs">+{job.subCategories.length - 2} more</Badge>
                           )}
