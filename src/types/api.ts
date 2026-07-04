@@ -224,9 +224,10 @@ export interface JobVacancy {
   title: string;
   description: string;
   requirements: string;
-  salaryMin: number | null;
-  salaryMax: number | null;
-  salaryCurrency: string | null;
+  salaryMin: number;
+  salaryMax?: number;
+  salaryCurrency?: string;
+  isSalaryVisible?: boolean;
   employmentType: EmploymentType;
   status: VacancyStatus;
   isPremium: boolean;
