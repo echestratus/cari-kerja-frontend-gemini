@@ -107,7 +107,7 @@ export default function ApplyJobButton({ jobId }: { jobId: string }) {
                 <option value="">-- Choose a Resume --</option>
                 {resumes.map((resume: any) => (
                   <option key={resume.id} value={resume.id}>
-                    {resume.title}
+                    {resume.jobTitle}
                   </option>
                 ))}
               </select>
