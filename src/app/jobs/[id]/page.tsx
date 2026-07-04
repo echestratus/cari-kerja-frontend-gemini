@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { JobVacancy, ApiResponse } from '@/types/api';
 import JobActions from './JobActions';
+import ApplyJobButton from './ApplyJobButton';
 
 async function getJob(id: string): Promise<JobVacancy | null> {
   try {
@@ -149,7 +150,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
                 ))}
               </div>
 
-              <Button size="lg" className="w-full md:w-auto px-10 text-base">Apply Now</Button>
+              <ApplyJobButton jobId={job.id} />
             </div>
 
             <div className="bg-white dark:bg-zinc-900 p-8 rounded-2xl border dark:border-zinc-800 shadow-sm space-y-6">
