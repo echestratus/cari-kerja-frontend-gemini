@@ -236,6 +236,7 @@ export interface JobVacancy {
   employer?: Employer;
   city?: City;
   subCategories?: SubCategory[];
+  skills?: Skill[];
 }
 
 export interface Application {

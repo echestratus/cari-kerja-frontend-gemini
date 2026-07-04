@@ -206,6 +206,16 @@ export default async function Home() {
                           {job.subCategories && job.subCategories.length > 0 && job.subCategories.slice(0, 2).map(sub => (
                             <Badge key={sub.id} variant="outline">{sub.name}</Badge>
                           ))}
+                          {job.skills && job.skills.length > 0 && job.skills.slice(0, 3).map(skill => (
+                            <Badge key={skill.id} variant="secondary" className="bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">
+                              {skill.name}
+                            </Badge>
+                          ))}
+                          {job.skills && job.skills.length > 3 && (
+                            <Badge variant="secondary" className="bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400">
+                              +{job.skills.length - 3} more
+                            </Badge>
+                          )}
                         </div>
                       </div>
                     </CardContent>
