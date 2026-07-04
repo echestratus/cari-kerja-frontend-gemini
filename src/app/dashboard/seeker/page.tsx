@@ -11,9 +11,10 @@ import { RoleGuard } from "@/components/RoleGuard";
 import { useAuth } from "@/providers/AuthProvider";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "@/lib/api-client";
-import { Briefcase, Building2, MapPin, Clock, Trash2, CheckCircle2, XCircle, Loader2, User as UserIcon, FileText, Settings, ShieldAlert, Check, Search, Plus, Edit2, GraduationCap, UploadCloud, X, Printer } from "lucide-react";
+import { Briefcase, Building2, MapPin, Clock, Trash2, CheckCircle2, XCircle, Loader2, User as UserIcon, FileText, Settings, ShieldAlert, Check, Search, Plus, Edit2, GraduationCap, UploadCloud, X, Printer, Eye } from "lucide-react";
 import Link from "next/link";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import ViewResumeDialog from './ViewResumeDialog';
 
 export default function SeekerDashboard() {
   const { user, checkAuth } = useAuth();
@@ -341,6 +342,7 @@ export default function SeekerDashboard() {
   const [isSavingResume, setIsSavingResume] = useState(false);
   
   const [deleteResumeModal, setDeleteResumeModal] = useState<{isOpen: boolean, id: string | null}>({isOpen: false, id: null});
+  const [viewResumeModal, setViewResumeModal] = useState<{isOpen: boolean, resume: any | null}>({isOpen: false, resume: null});
   const [isDeletingResume, setIsDeletingResume] = useState(false);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -1087,6 +1089,7 @@ export default function SeekerDashboard() {
                                 <Link href={`/cv/builder/${resume.id}`}>
                                   <Button variant="default" size="sm" className="flex-1 md:flex-none"><Printer className="w-4 h-4 mr-2" /> CV Builder</Button>
                                 </Link>
+                                <Button variant="outline" size="sm" className="flex-1 md:flex-none" onClick={() => setViewResumeModal({ isOpen: true, resume })}><Eye className="w-4 h-4 mr-2" /> View Details</Button>
                                 <Button variant="outline" size="sm" className="flex-1 md:flex-none" onClick={() => handleOpenEditResume(resume)}><Edit2 className="w-4 h-4 mr-2" /> Edit</Button>
                                 <Button variant="outline" size="sm" className="text-red-600 hover:bg-red-50 hover:border-red-200 hover:text-red-700" onClick={() => setDeleteResumeModal({isOpen: true, id: resume.id})}><Trash2 className="w-4 h-4" /></Button>
                               </div>
@@ -1502,6 +1505,11 @@ export default function SeekerDashboard() {
             </Dialog>
 
           </div>
+          <ViewResumeDialog
+            isOpen={viewResumeModal.isOpen}
+            setIsOpen={(isOpen) => setViewResumeModal(prev => ({ ...prev, isOpen }))}
+            resume={viewResumeModal.resume}
+          />
         </main>
       </div>
     </RoleGuard>
