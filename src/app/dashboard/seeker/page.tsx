@@ -15,6 +15,8 @@ import { Briefcase, Building2, MapPin, Clock, Trash2, CheckCircle2, XCircle, Loa
 import Link from "next/link";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ViewResumeDialog from './ViewResumeDialog';
+import UploadCvModal from './UploadCvModal';
+import { toast } from 'sonner';
 
 export default function SeekerDashboard() {
   const { user, checkAuth } = useAuth();
@@ -325,8 +327,8 @@ export default function SeekerDashboard() {
 
 
   // -- CV Upload & Resume Profile State --
-  const [uploadingCv, setUploadingCv] = useState(false);
-  const [selectedResumeForUpload, setSelectedResumeForUpload] = useState<string | null>(null);
+  const [uploadCvModal, setUploadCvModal] = useState<{ isOpen: boolean; resumeId: string | null; resumeTitle: string }>({ isOpen: false, resumeId: null, resumeTitle: '' });
+  
   
   // Full CRUD state
   const [resumeModal, setResumeModal] = useState<{isOpen: boolean, mode: 'create'|'edit', id: string | null}>({isOpen: false, mode: 'create', id: null});
@@ -345,7 +347,6 @@ export default function SeekerDashboard() {
   const [viewResumeModal, setViewResumeModal] = useState<{isOpen: boolean, resume: any | null}>({isOpen: false, resume: null});
   const [isDeletingResume, setIsDeletingResume] = useState(false);
   
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Fetch Categories for Resume Profile
   const { data: categoriesData } = useQuery({
@@ -398,16 +399,16 @@ export default function SeekerDashboard() {
       
       if (resumeModal.mode === 'create') {
         await apiClient.post('/resumes', payload);
-        alert("Resume profile created successfully!");
+        toast.success('Resume profile created successfully!');
       } else if (resumeModal.mode === 'edit' && resumeModal.id) {
         await apiClient.patch(`/resumes/${resumeModal.id}`, payload);
-        alert("Resume profile updated successfully!");
+        toast.success('Resume profile updated successfully!');
       }
       await checkAuth();
       setResumeModal({ isOpen: false, mode: 'create', id: null });
     } catch (err: any) {
       console.error(err);
-      alert(err.response?.data?.message || "Failed to save resume profile");
+      toast.error(err.response?.data?.message || 'Failed to save resume profile');
     } finally {
       setIsSavingResume(false);
     }
@@ -419,46 +420,28 @@ export default function SeekerDashboard() {
     try {
       await apiClient.delete(`/resumes/${deleteResumeModal.id}`);
       await checkAuth();
-      alert("Resume profile deleted successfully!");
+      toast.success('Resume profile deleted successfully!');
       setDeleteResumeModal({ isOpen: false, id: null });
     } catch (err: any) {
       console.error(err);
-      alert(err.response?.data?.message || "Failed to delete resume profile");
+      toast.error(err.response?.data?.message || 'Failed to delete resume profile');
     } finally {
       setIsDeletingResume(false);
     }
   };
 
-  const triggerUploadCv = (resumeId: string) => {
-    setSelectedResumeForUpload(resumeId);
-    fileInputRef.current?.click();
+  const triggerUploadCv = (resumeId: string, resumeTitle: string) => {
+    setUploadCvModal({ isOpen: true, resumeId, resumeTitle });
   };
 
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file || !selectedResumeForUpload) return;
-
-    setUploadingCv(true);
-    try {
-      const formData = new FormData();
-      formData.append('file', file);
-      
-      const uploadRes = await apiClient.post(`/resumes/${selectedResumeForUpload}/upload`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
-      
-      await checkAuth(); 
-      alert("CV Uploaded successfully!");
-    } catch (err: any) {
-      console.error(err);
-      alert(err.response?.data?.message || "Failed to upload CV");
-    } finally {
-      setUploadingCv(false);
-      setSelectedResumeForUpload(null);
-      if (fileInputRef.current) fileInputRef.current.value = "";
-    }
+  const handleFileUpload = async (file: File) => {
+    if (!uploadCvModal.resumeId) return;
+    const formData = new FormData();
+    formData.append('file', file);
+    await apiClient.post(`/resumes/${uploadCvModal.resumeId}/upload`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
+    await checkAuth();
   };
 
   // Fetch Applications
@@ -1111,8 +1094,8 @@ export default function SeekerDashboard() {
                                     <a href={`${process.env.NEXT_PUBLIC_API_URL?.replace('/api/v1','') || 'http://localhost:3000'}${resume.fileUrl}`} target="_blank" rel="noopener noreferrer" className="flex-1 sm:flex-none">
                                       <Button variant="secondary" size="sm" className="w-full">View</Button>
                                     </a>
-                                    <Button variant="outline" size="sm" className="flex-1 sm:flex-none" onClick={() => triggerUploadCv(resume.id)} disabled={uploadingCv}>
-                                      {uploadingCv && selectedResumeForUpload === resume.id ? <Loader2 className="w-4 h-4 animate-spin"/> : <UploadCloud className="w-4 h-4 mr-2"/>}
+                                    <Button variant="outline" size="sm" className="flex-1 sm:flex-none" onClick={() => triggerUploadCv(resume.id, resume.jobTitle)}>
+                                      <UploadCloud className="w-4 h-4 mr-2"/>
                                       Replace
                                     </Button>
                                   </div>
@@ -1122,8 +1105,8 @@ export default function SeekerDashboard() {
                                   <div className="text-sm text-zinc-500 flex items-center">
                                     <XCircle className="w-4 h-4 mr-2 text-orange-500"/> No CV uploaded yet. Employers prefer candidates with a CV.
                                   </div>
-                                  <Button size="sm" onClick={() => triggerUploadCv(resume.id)} disabled={uploadingCv} className="w-full sm:w-auto">
-                                    {uploadingCv && selectedResumeForUpload === resume.id ? <Loader2 className="w-4 h-4 mr-2 animate-spin"/> : <UploadCloud className="w-4 h-4 mr-2"/>} Upload PDF/DOC
+                                  <Button size="sm" onClick={() => triggerUploadCv(resume.id, resume.jobTitle)} className="w-full sm:w-auto">
+                                    <UploadCloud className="w-4 h-4 mr-2"/> Upload PDF/DOC
                                   </Button>
                                 </div>
                               )}
@@ -1131,7 +1114,12 @@ export default function SeekerDashboard() {
                           </div>
                         ))}
                         
-                        <input type="file" ref={fileInputRef} className="hidden" accept=".pdf,.doc,.docx" onChange={handleFileUpload} />
+                        <UploadCvModal 
+                          isOpen={uploadCvModal.isOpen} 
+                          onClose={() => setUploadCvModal({ isOpen: false, resumeId: null, resumeTitle: '' })} 
+                          onUpload={handleFileUpload}
+                          resumeTitle={uploadCvModal.resumeTitle} 
+                        />
                       </div>
                     )}
                   </CardContent>
